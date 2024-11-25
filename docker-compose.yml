@@ -1,0 +1,29 @@
+version: "3.1"
+
+volumes:
+  pg_effective:
+
+services:
+  effective_db:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=effective_user
+      - POSTGRES_PASSWORD=admineffective
+      - POSTGRES_DB=effective
+    volumes:
+      - pg_effective:/var/lib/postgresql/data
+    ports:
+      - "37001:5432"
+  effective_app:
+    restart: always
+    build: .
+    ports:
+      - "37000:37000"
+    depends_on:
+      - effective_db
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://effective_db:5432/effective"
+      SPRING_DATASOURCE_USERNAME: effective_user
+      SPRING_DATASOURCE_PASSWORD: admineffective
+      TOKEN_SIGNING_KEY: 53A73E5F1C4E0A2D3B5F2D784E6A1B423D6F247D1F6E5C3A596D635A75327855
